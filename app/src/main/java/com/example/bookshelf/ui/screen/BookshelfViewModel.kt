@@ -37,4 +37,5 @@ class BookshelfViewModel: ViewModel() {
             }
         }
     }
+
 }

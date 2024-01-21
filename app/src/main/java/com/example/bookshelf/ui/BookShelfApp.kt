@@ -30,10 +30,11 @@ fun BookShelfApp(
         topBar ={ BookShelfTopAppBar(modifier) },
         modifier = modifier.fillMaxSize()
     ) {
+
         Surface(
             modifier = modifier.padding(it)
         ) {
-            MainScreen(modifier.fillMaxSize())
+            MainScreen(uiState = uiState)
         }
     }
 }

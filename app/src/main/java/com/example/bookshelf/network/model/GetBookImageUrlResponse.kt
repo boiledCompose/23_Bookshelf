@@ -9,6 +9,7 @@ data class GetBookImageUrlResponse(
 
 @Serializable
 data class GetImageLinks(
+    val title:String,
     val imageLinks: GetThumbnail
 )
 
