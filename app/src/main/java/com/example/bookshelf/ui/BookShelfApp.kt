@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.bookshelf.R
+import com.example.bookshelf.ui.screen.BookshelfUiState
 import com.example.bookshelf.ui.screen.MainScreen
 
 
@@ -22,6 +23,7 @@ import com.example.bookshelf.ui.screen.MainScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookShelfApp(
+    uiState: BookshelfUiState,
     modifier:Modifier = Modifier
 ) {
     Scaffold(
@@ -31,7 +33,7 @@ fun BookShelfApp(
         Surface(
             modifier = modifier.padding(it)
         ) {
-            MainScreen(modifier)
+            MainScreen(modifier.fillMaxSize())
         }
     }
 }
