@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BookshelfTheme {
 
-                val bookshelfViewModel:BookshelfViewModel = viewModel()
+                val bookshelfViewModel:BookshelfViewModel = viewModel(factory = BookshelfViewModel.Factory)
                 BookShelfApp(bookshelfViewModel.bookshelfUiState)
             }
         }

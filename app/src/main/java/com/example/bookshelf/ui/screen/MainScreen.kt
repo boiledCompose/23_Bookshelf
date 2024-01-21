@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
+import com.example.bookshelf.model.BookItem
 
 @Composable
 fun MainScreen(
@@ -36,7 +37,7 @@ fun MainScreen(
 ) {
         when (uiState) {
             is BookshelfUiState.Success -> SuccessScreen(
-                imgUrlList = uiState.imageUrls,
+                bookItems = uiState.bookItems,
                 modifier = modifier
                     .fillMaxSize()
                     .background(Color.White)
@@ -90,7 +91,7 @@ fun ErrorScreen(
 
 @Composable
 fun SuccessScreen(
-    imgUrlList: List<String>,
+    bookItems: List<BookItem>,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -100,9 +101,10 @@ fun SuccessScreen(
         modifier = modifier.fillMaxWidth(),
         contentPadding = PaddingValues(4.dp)
     ) {
-        items(items = imgUrlList) {
-            imgUrl -> BookThumbnailCard(
-            imgUrl = imgUrl)
+        items(items = bookItems) {
+            item -> BookThumbnailCard(
+            bookTitle = item.title,
+            imgUrl = item.imgUrl)
         }
     }
 }

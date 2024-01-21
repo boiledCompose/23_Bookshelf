@@ -4,14 +4,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.example.bookshelf.network.BookApi
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.bookshelf.BookshelfApplication
+import com.example.bookshelf.data.BookShelfRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
 private const val TAG = "BookshelfViewModel"
-class BookshelfViewModel: ViewModel() {
+class BookshelfViewModel(
+    private val bookShelfRepository: BookShelfRepository
+): ViewModel() {
     var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
 
     init {
@@ -21,19 +28,22 @@ class BookshelfViewModel: ViewModel() {
     private fun getBookImageUrls() {
         viewModelScope.launch {
             bookshelfUiState = try {
-                val bookItemList = BookApi.retrofitService.getBookItemsList()
-                val imageUrlList = mutableListOf<String>()
-                for (item in bookItemList.items) {
-                    val result = BookApi.retrofitService.getBookImageUrl(item.id)
-                    imageUrlList.apply {
-                        add(result.volumeInfo.imageLinks.thumbnail)
-                    }
-                }
-                BookshelfUiState.Success(imageUrlList.toList())
+                val bookItemList = bookShelfRepository.getBookItemInfo()
+                BookshelfUiState.Success(bookItemList)
             } catch (e:HttpException){
                 BookshelfUiState.Error
             } catch (e:IOException) {
                 BookshelfUiState.Error
+            }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as BookshelfApplication)
+                val bookShelfRepository = application.container.bookShelfRepository
+                BookshelfViewModel(bookShelfRepository = bookShelfRepository)
             }
         }
     }
