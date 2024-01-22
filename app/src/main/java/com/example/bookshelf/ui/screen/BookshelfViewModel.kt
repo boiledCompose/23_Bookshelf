@@ -11,24 +11,35 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bookshelf.BookshelfApplication
 import com.example.bookshelf.data.BookShelfRepository
+import com.example.bookshelf.model.BookItem
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-private const val TAG = "BookshelfViewModel"
+sealed interface BookshelfUiState{
+    data class Success(
+        val bookItems: List<BookItem>
+    ): BookshelfUiState
+
+    object Error:BookshelfUiState
+
+    object Loading:BookshelfUiState
+}
+
 class BookshelfViewModel(
-    private val bookShelfRepository: BookShelfRepository
+    private val bookShelfRepository: BookShelfRepository,
+    private val query: String
 ): ViewModel() {
     var bookshelfUiState: BookshelfUiState by mutableStateOf(BookshelfUiState.Loading)
 
     init {
-        getBookImageUrls()
+        getBookImageUrlsByQuery()
     }
 
-    private fun getBookImageUrls() {
+    fun getBookImageUrlsByQuery() {
         viewModelScope.launch {
             bookshelfUiState = try {
-                val bookItemList = bookShelfRepository.getBookItemInfo()
+                val bookItemList = bookShelfRepository.getBookItemInfo(query)
                 BookshelfUiState.Success(bookItemList)
             } catch (e:HttpException){
                 BookshelfUiState.Error
@@ -39,13 +50,15 @@ class BookshelfViewModel(
     }
 
     companion object {
+        var query:String = "jazz+history"
+
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as BookshelfApplication)
                 val bookShelfRepository = application.container.bookShelfRepository
-                BookshelfViewModel(bookShelfRepository = bookShelfRepository)
+                BookshelfViewModel(bookShelfRepository = bookShelfRepository, query=query)
             }
         }
     }
-
 }
+

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Bookshelf</string>
     <string name="default_image_description">Book</string>
+    <string name="search_text_field_label">Type words to search</string>
 </resources>

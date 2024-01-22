@@ -31,7 +31,7 @@ import com.example.bookshelf.R
 import com.example.bookshelf.model.BookItem
 
 @Composable
-fun MainScreen(
+fun BookshelfScreen(
     uiState: BookshelfUiState,
     modifier: Modifier = Modifier
 ) {
